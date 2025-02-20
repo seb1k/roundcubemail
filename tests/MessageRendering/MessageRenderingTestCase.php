@@ -148,7 +148,7 @@ class MessageRenderingTestCase extends ActionTestCase
         $this->assertSame($content, trim($body));
     }
 
-    private function assertSrcUrlParams(array $params, string $partId): void
+    protected function assertSrcUrlParams(array $params, string $partId): void
     {
         $this->assertSame('mail', $params['_task']);
         $this->assertSame('get', $params['_action']);
