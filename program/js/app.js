@@ -250,22 +250,17 @@ function rcube_webmail() {
 
         if (this.task === 'mail' && (this.env.action === 'preview' || this.env.action === 'show')) {
             document.querySelectorAll('iframe.framed-message-part').forEach((iframe) => {
-                // Resize twice initially: first time when the iframe's
-                // document was parsed, to already provide roughly the
-                // correct height; second time when all resources have been
-                // loaded, to finally ensure the correct height with all
-                // images etc.
-                iframe.addEventListener('DOMContentLoaded', () => this.resize_preview_iframe(iframe));
-                iframe.addEventListener('load', () => {
-                    this.resize_preview_iframe(iframe);
-                    // Hide "Loading data" message.
-                    $(iframe).siblings('.loading').hide();
-                    // Show notice
-                    if (iframe.contentDocument.body.dataset.extlinks === 'true') {
-                        $(this.gui_objects.remoteobjectsmsg).show();
-                        this.enable_command('load-remote', true);
-                    }
-                });
+                if (iframe.contentDocument.readyState === 'complete') {
+                    this.iframe_actions_after_load(iframe);
+                } else {
+                    // Resize twice initially: first time when the iframe's
+                    // document was parsed, to already provide roughly the
+                    // correct height; second time when all resources have been
+                    // loaded, to finally ensure the correct height with all
+                    // images etc.
+                    iframe.addEventListener('DOMContentLoaded', () => this.resize_preview_iframe(iframe));
+                    iframe.addEventListener('load', () => this.iframe_actions_after_load(iframe));
+                }
                 // Also run on window resizes, because the changed text flow could need more space.
                 window.addEventListener('resize', () => this.resize_preview_iframe(iframe));
             });
@@ -10681,6 +10676,17 @@ function rcube_webmail() {
     this.print_dialog = function () {
         // setTimeout for Safari
         setTimeout('window.print()', 10);
+    };
+
+    this.iframe_actions_after_load = function (iframe) {
+        this.resize_preview_iframe(iframe);
+        // Hide "Loading data" message.
+        $(iframe).siblings('.loading').hide();
+        // Show notice
+        if (iframe.contentDocument.body.dataset.extlinks === 'true') {
+            $(this.gui_objects.remoteobjectsmsg).show();
+            this.enable_command('load-remote', true);
+        }
     };
 
     this.resize_preview_iframe = function (iframe) {
