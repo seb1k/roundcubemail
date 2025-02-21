@@ -349,7 +349,11 @@ class rcmail_action_mail_get extends rcmail_action_mail_index
         return html::iframe($attrib);
     }
 
-    protected function send_html($contents, $inline_warning = null)
+    /**
+     * @param $contents       string Content to send as HTTP body
+     * @param $inline_warning string Something to inject into the beginning of the content
+     */
+    protected function send_html($contents, $inline_warning = null): void
     {
         $rcmail = rcmail::get_instance();
         $rcmail->output->reset(true);
@@ -383,7 +387,14 @@ class rcmail_action_mail_get extends rcmail_action_mail_index
         $rcmail->output->sendExit();
     }
 
-    protected function make_inline_warning($text, $button_label = null, $button_url = null)
+    /**
+     * @param $text         string Text content
+     * @param $button_label string Text for the optional button to append to the content
+     * @param $button_url   string URL of the button
+     *
+     * @return string HTML code as string
+     */
+    protected function make_inline_warning($text, $button_label = null, $button_url = null): string
     {
         $text = html::span(null, $text);
 
