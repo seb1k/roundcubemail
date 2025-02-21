@@ -221,7 +221,7 @@ class rcmail_action_mail_get extends rcmail_action_mail_index
                 // embed.css and blocks loading other css files (though calling
                 // reset() in write()). Also we don't need all the processing that it
                 // brings.
-                $styles_path = $rcmail->output->get_skin_file('/styles/styles.css', $path, null, true);
+                $styles_path = $rcmail->output->get_skin_file('/styles/styles.css');
                 $body = html::tag('html', [],
                     html::tag('head', [], html::tag('link', ['rel' => 'stylesheet', 'href' => $styles_path]))
                     . html::tag('body', [], $body)
@@ -356,7 +356,7 @@ class rcmail_action_mail_get extends rcmail_action_mail_index
 
         // load embed.css from skin folder (if exists)
         $embed_css = $rcmail->config->get('embed_css_location', '/embed.css');
-        if ($embed_css = $rcmail->output->get_skin_file($embed_css, $path, null, true)) {
+        if ($embed_css = $rcmail->output->get_skin_file($embed_css)) {
             $rcmail->output->include_css($embed_css);
         } else {  // set default styles for warning blocks inside the attachment part frame
             $rcmail->output->add_header(html::tag('style', ['type' => 'text/css'],
